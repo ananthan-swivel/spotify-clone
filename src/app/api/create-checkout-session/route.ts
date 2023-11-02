@@ -4,6 +4,7 @@ import { createOrRetrieveCustomer } from "@/lib/supabaseAdmin";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import Stripe from "stripe";
 
 export async function POST(request: Request) {
   const { price, quantity = 1, metadata = {} } = await request.json();
@@ -24,7 +25,7 @@ export async function POST(request: Request) {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       billing_address_collection: "required",
-      customer,
+      customer: customer,
       line_items: [
         {
           price: price.id,
@@ -39,7 +40,7 @@ export async function POST(request: Request) {
       },
       success_url: `${getURL()}/account`,
       cancel_url: `${getURL()}/`,
-    });
+    } as Stripe.Checkout.SessionCreateParams);
 
     return NextResponse.json({ sessionId: session.id });
   } catch (err: any) {

@@ -19,10 +19,6 @@ const AccountContent = () => {
     if (!isLoading && !user) {
       router.replace("/");
     }
-    console.log(
-      "🚀 ~ file: AccountContent.tsx:15 ~ AccountContent ~ subscription:",
-      subscription
-    );
   }, [isLoading, user, router, subscription]);
 
   const redirectToCustomerPortal = async () => {
